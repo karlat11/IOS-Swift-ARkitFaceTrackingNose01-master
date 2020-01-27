@@ -12,17 +12,23 @@ import ARKit
 class ViewController: UIViewController {
     
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var text: UITextView!
+    @IBOutlet weak var label: UILabel!
+    
     
     let noseOptions = ["nose1", "nose2", "nose3", "nose4"]
     let features = ["nose"]
     var featureIndices = [[1]]
-//    let textOptions = ["Text 1", "Text 2", "Text 3", "Text 4"]
-    
+    let textOptions = ["Text 1 Litwo ojczyno moja", "Text 2 Ty jestes jak zdrowie", "Text 3 Ile Cie trzeba cenic", "Text 4 Ten tylko sie dowie kto Cie stracil"]
+    var textIdx = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         sceneView.delegate = self
+        
+        self.text.text = textOptions.first!
+        self.label.text = textOptions.first!
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,6 +54,7 @@ class ViewController: UIViewController {
             let node = result.node as? FaceNode {
             print(node)
             node.next()
+            updateText()
         }
     }
     
@@ -56,6 +63,7 @@ class ViewController: UIViewController {
             print(self.noseOptions.randomElement()!)
             print(sceneView)
             print(sceneView.node)
+            updateText()
             
 //            print(self.nod)
 ////            let child = self.
@@ -81,6 +89,12 @@ class ViewController: UIViewController {
             let vertices = indices.map { anchor.geometry.vertices[$0] }
             child?.updatePosition(for: vertices)
         }
+    }
+    
+    func updateText() {
+//        self.textid = (index + 1) % options.count
+        self.textIdx = (textIdx + 1) % self.textOptions.count
+        self.label.text = self.textOptions[textIdx]
     }
 }
 
