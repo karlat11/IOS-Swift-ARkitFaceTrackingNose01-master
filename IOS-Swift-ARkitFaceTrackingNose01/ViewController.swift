@@ -15,11 +15,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var text: UITextView!
     @IBOutlet weak var label: UILabel!
     
+    public var FNodeInstance: SCNNode!
     
-    let noseOptions = ["nose1", "nose2", "nose3", "nose4"]
-    let features = ["nose"]
-    var featureIndices = [[1]]
-    let textOptions = ["Text 1 Litwo ojczyno moja", "Text 2 Ty jestes jak zdrowie", "Text 3 Ile Cie trzeba cenic", "Text 4 Ten tylko sie dowie kto Cie stracil"]
+    let noseOptions = ["moustache1", "", "moustache2"]
+    let hatOptions = ["hat1", "", "hat2"]
+    let features = ["nose", "hat"]
+    let featuresHat = ["hat"]
+    var featureIndices = [[0], [13]]
+    let textOptions = ["Jozef Pilsudzki, the First Marshal of Poland rejected the offer of presidency.", "Heinrich Himmler was searching for Holy Grail to help the Nazi army win the war.", "Stalin had multiple dopplegangers who to proctect himself."]
     var textIdx = 0
     
     override func viewDidLoad() {
@@ -52,25 +55,20 @@ class ViewController: UIViewController {
         print(results)
         if let result = results.first,
             let node = result.node as? FaceNode {
-            print(node)
+//            public var node = node
+            print("node", node)
             node.next()
             updateText()
+            print("self", self)
         }
     }
     
     override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            print(self.noseOptions.randomElement()!)
-            print(sceneView)
-            print(sceneView.node)
             updateText()
-            
-//            print(self.nod)
-////            let child = self.
-//            FaceNode
-//            let child = node.childNode(withName: feature, recursively: false) as? FaceNode
-//            child?.next()
-            
+            print("FNodeInstance", FNodeInstance.childNodes.first!)
+            let node = FNodeInstance.childNodes.first! as? FaceNode
+            node?.next()
         }
         
     }
@@ -83,7 +81,6 @@ class ViewController: UIViewController {
     }
     
     func updateFeatures(for node: SCNNode, using anchor: ARFaceAnchor) {
-//        print(featureIndices)
         for (feature, indices) in zip(features, featureIndices) {
             let child = node.childNode(withName: feature, recursively: false) as? FaceNode
             let vertices = indices.map { anchor.geometry.vertices[$0] }
@@ -92,9 +89,11 @@ class ViewController: UIViewController {
     }
     
     func updateText() {
-//        self.textid = (index + 1) % options.count
         self.textIdx = (textIdx + 1) % self.textOptions.count
         self.label.text = self.textOptions[textIdx]
+    }
+    
+    func updateTexture() {
     }
 }
 
@@ -116,12 +115,11 @@ extension ViewController: ARSCNViewDelegate {
         noseNode.name = "nose"
         node.addChildNode(noseNode)
         
-//        print(noseNode)
-//        print(node)
+        FNodeInstance = node
         
         updateFeatures(for: node, using: faceAnchor)
         
-        return node
+        return FNodeInstance
     }
     
     func renderer(

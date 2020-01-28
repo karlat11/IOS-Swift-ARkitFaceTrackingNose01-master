@@ -8,7 +8,7 @@
 
 import SceneKit
 
-class FaceNode: SCNNode {
+public class FaceNode: SCNNode {
     
     var options: [String]
 //    var textOptions: [String]
@@ -29,11 +29,17 @@ class FaceNode: SCNNode {
         
         geometry = plane
         
+//        print("self", self)
+        
 //        text.text = textOptions.first!
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    struct globalVariables {
+        static var FNode = self
     }
 }
 
@@ -46,11 +52,17 @@ extension FaceNode {
         position = SCNVector3(newPos)
     }
     
-    func next() {
+    public func next() {
         index = (index + 1) % options.count
 //        textIdx = (textIdx + 1) % textOptions.count
         
         if let plane = geometry as? SCNPlane {
+            if (options[index] == "") {
+                print("options !!!", options[index])
+                plane.firstMaterial?.transparency = 0.0
+            } else {
+                plane.firstMaterial?.transparency = 1.0
+            }
             plane.firstMaterial?.diffuse.contents = UIImage(named: options[index])
             plane.firstMaterial?.isDoubleSided = true
         }
